@@ -1,0 +1,66 @@
+\usetikzlibrary{matrix,paths.ortho,calc,positioning-plus}
+\begin{tikzpicture}[
+  tight matrix/.style={
+    matrix of nodes, inner sep=+0pt, outer sep=+0pt,
+    every cell/.append style={
+      every node/.append style={
+        outer sep=+0pt,
+        inner xsep=+.1em,
+        inner ysep=+.3333em, % default (overwritten by matrix inner sep)
+        align=center,
+        text depth=+0pt, % depth("y"),
+        text height=height("M"),
+        text width=width("MMM-00-00"), % possibly other approaches
+      }}},
+  desc/.style={/utils/exec=\scriptsize}, % font key is not perfect
+  continent/.style={
+    desc, align=center, anchor=east},
+  hemi/.style={desc, align=center, text width=width("Hemisphere")},
+  route/.style={desc},
+  Route/.style={font=\bfseries},
+]
+
+% The matrix
+\matrix[tight matrix, draw] (m) {
+$MATRIX$
+};
+
+% The 3D
+\tikzset{my cs/.style={local cs={m.north west}{m.north east}{1}{0.5*$DEPTH$}}}
+\begin{scope}[my cs]
+% upper left z axis and upper x axis in the distance
+\draw (0,0) |- (1,1) -- (right:1)
+    (m.south east) -- ++ (up:1) -- (1,1);
+
+% The lines
+
+% vertical inside lines 
+\foreach \c in {1,$COLUMNS-1$}
+  \draw (m-$ROWS*MEASURES$-\c.south east) -- (m-1-\c.north east) -- ++ (up:1);
+
+% horizontal inside lines, wrapping into the distance to the right
+\foreach \c in {1,...,$ROWS*MEASURES-1$}
+  \draw[if={isodd(\c)}{densely dashed}{}]
+    (m-\c-1.south west) -- (m-\c-2.south east) -- ++(up:1);
+
+% horizontal lines on top and vertical lines to the right in the distance
+\foreach \c in {1,...,$LAYERS$}
+  \draw[if={isodd(\c)}{densely dashed}{}]
+    (up:\c/$LAYERS$) coordinate (tl-\c) -- ++ (right:1) -- ([shift=(up:\c/$LAYERS$)]m.south east);
+
+\end{scope}
+
+% The Descriptions
+
+% y dimension values
+\foreach \st/\lt[count=\c from 0, evaluate={\d=int(2*\c+1)}]
+ in {$YVALUES$}
+   \node[continent] (\st) at (m-\d-1.south west) {\lt};
+
+% z dimension values
+\begin{scope}[node distance=.25cm, hvvh/distance=.2cm, my cs]
+\foreach \st[count=\c from 0, evaluate={\d=int(2*\c+1)}] in {$ZVALUES$}
+  \node[continent, left=of tl-\d](\st){\st};
+\end{scope}
+
+\end{tikzpicture}
