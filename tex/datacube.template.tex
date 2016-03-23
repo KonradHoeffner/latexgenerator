@@ -1,4 +1,10 @@
+\documentclass[tikz]{standalone}
 \usetikzlibrary{matrix,paths.ortho,calc,positioning-plus}
+\tikzset{local cs/.style n args=4{shift={(#1)}, x=($(#2)-(#1)$), xslant={#3}, yscale={#4}}}
+\tikzset{if/.code n args=3{\pgfmathparse{#1}\ifnum\pgfmathresult=0 
+  \pgfkeysalso{#3}\else\pgfkeysalso{#2}\fi}}
+
+\begin{document}
 \begin{tikzpicture}[
   tight matrix/.style={
     matrix of nodes, inner sep=+0pt, outer sep=+0pt,
@@ -22,11 +28,11 @@
 
 % The matrix
 \matrix[tight matrix, draw] (m) {
-$MATRIX$
+§MATRIX§
 };
 
 % The 3D
-\tikzset{my cs/.style={local cs={m.north west}{m.north east}{1}{0.5*$DEPTH$}}}
+\tikzset{my cs/.style={local cs={m.north west}{m.north east}{1}{0.35*§LAYERS§}}}
 \begin{scope}[my cs]
 % upper left z axis and upper x axis in the distance
 \draw (0,0) |- (1,1) -- (right:1)
@@ -35,18 +41,18 @@ $MATRIX$
 % The lines
 
 % vertical inside lines 
-\foreach \c in {1,$COLUMNS-1$}
-  \draw (m-$ROWS*MEASURES$-\c.south east) -- (m-1-\c.north east) -- ++ (up:1);
+\foreach \c in {1,...,§COLUMNS-1§}
+  \draw (m-§ROWS*MEASURES§-\c.south east) -- (m-1-\c.north east) -- ++ (up:1);
 
 % horizontal inside lines, wrapping into the distance to the right
-\foreach \c in {1,...,$ROWS*MEASURES-1$}
+\foreach \c in {1,...,§ROWS*MEASURES-1§}
   \draw[if={isodd(\c)}{densely dashed}{}]
-    (m-\c-1.south west) -- (m-\c-2.south east) -- ++(up:1);
+    (m-\c-1.south west) -- (m-\c-§COLUMNS§.south east) -- ++(up:1);
 
 % horizontal lines on top and vertical lines to the right in the distance
-\foreach \c in {1,...,$LAYERS$}
-  \draw[if={isodd(\c)}{densely dashed}{}]
-    (up:\c/$LAYERS$) coordinate (tl-\c) -- ++ (right:1) -- ([shift=(up:\c/$LAYERS$)]m.south east);
+\foreach \c in {1,...,§LAYERS§}
+  \draw%[if={isodd(\c)}{densely dashed}{}]
+    (up:\c/§LAYERS§) coordinate (tl-\c) -- ++ (right:1) -- ([shift=(up:\c/§LAYERS§)]m.south east);
 
 \end{scope}
 
@@ -54,13 +60,14 @@ $MATRIX$
 
 % y dimension values
 \foreach \st/\lt[count=\c from 0, evaluate={\d=int(2*\c+1)}]
- in {$YVALUES$}
+ in {§YVALUES§}
    \node[continent] (\st) at (m-\d-1.south west) {\lt};
 
 % z dimension values
 \begin{scope}[node distance=.25cm, hvvh/distance=.2cm, my cs]
-\foreach \st[count=\c from 0, evaluate={\d=int(2*\c+1)}] in {$ZVALUES$}
+\foreach \st[count=\c from 0, evaluate={\d=int(\c+1)}] in {§ZVALUES§}
   \node[continent, left=of tl-\d](\st){\st};
 \end{scope}
 
 \end{tikzpicture}
+\end{document}

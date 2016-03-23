@@ -1,0 +1,10 @@
+*.tmp
+*.log
+*.out
+*.aux
+*javadoc*.jar
+.*
+/bin/
+output.tex
+*.fls
+*.fdb_latexmk
