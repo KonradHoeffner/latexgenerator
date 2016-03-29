@@ -58,6 +58,11 @@
 
 % The Descriptions
 
+% x dimension values
+\foreach \st/\lt[count=\c from 1]                                                                        
+ in {§XVALUES§}
+    \node[yshift=-0.7em] (\st) at (m-§ROWS*MEASURES§-\c.south) {\lt};
+
 % y dimension values
 \foreach \st/\lt[count=\c from 0, evaluate={\d=int(2*\c+1)}]
  in {§YVALUES§}
@@ -68,6 +73,14 @@
 \foreach \st[count=\c from 0, evaluate={\d=int(\c+1)}] in {§ZVALUES§}
   \node[continent, left=of tl-\d](\st){\st};
 \end{scope}
+
+% Legend
+\matrix[tight matrix, draw,below=of m-8-1,xshift=-3em] (l) {
+measure1\\
+measure2\\
+};                                                                                                       
+\node[above=of l-2-1.south] {Measures};
+\draw[densely dashed] (l-1-1.south west)--(l-1-1.south east);
 
 \end{tikzpicture}
 \end{document}

@@ -21,7 +21,7 @@ public class DataCube
 		{
 			System.out.println("Data Cube Latex Generator, no options given, using defaults. For next time:");
 			parser.printHelpOn( System.out );
-			args = new String[] {"-c9","-r11","-l7"};
+			args = new String[] {"-c2","-r4","-l3"};
 		}
 		OptionSet options = parser.parse(args);
 		int columns = options.valueOf(columnSpec);
